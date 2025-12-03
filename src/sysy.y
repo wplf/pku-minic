@@ -26,6 +26,7 @@ using namespace std;
 // %parse-param { std::unique_ptr<std::string> &ast }
 
 // 返回一个 ast 的智能指针
+// 可以重写 yyparse 函数， 给 yyparse 提供一个参数
 %parse-param { std::unique_ptr<BaseAST> &ast }
 
 
@@ -34,6 +35,8 @@ using namespace std;
 // 之前我们在 lexer 中用到的 str_val 和 int_val 就是在这里被定义的
 // 至于为什么要用字符串指针而不直接用 string 或者 unique_ptr<string>?
 // 请自行 STFW 在 union 里写一个带析构函数的类会出现什么情况
+
+// 这些是 union， 是token和type中能用类型的集合
 %union {
   std::string *str_val;
   int int_val;
@@ -42,11 +45,13 @@ using namespace std;
 
 // lexer 返回的所有 token 种类的声明
 // 注意 IDENT 和 INT_CONST 会返回 token 的值, 分别对应 str_val 和 int_val
+// 这些是终结符，代表单词
 %token INT RETURN
 %token <str_val> IDENT
 %token <int_val> INT_CONST
 
 // 非终结符的类型定义
+// 这些是非终结符，代表语法规则
 %type <ast_val> FuncDef FuncType Block Stmt
 %type <int_val> Number
 
