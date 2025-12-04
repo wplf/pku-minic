@@ -3,6 +3,7 @@
 #include <iostream>
 #include <memory>
 #include <string>
+#include <fstream>
 #include "ast.hpp"
 
 using namespace std;
@@ -23,6 +24,7 @@ int main(int argc, const char *argv[]) {
   // compiler 模式 输入文件 -o 输出文件
   // yydebug = 1;  // 启用调试
   // YYDEBUG = 1;
+  // ./build/compiler -koopa hello.cpp -o hello.koopa
 
   assert(argc == 5);
   auto mode = argv[1];
@@ -40,7 +42,24 @@ int main(int argc, const char *argv[]) {
 
   // // 输出解析得到的 AST, 其实就是个字符串
   // cout << *ast << endl;
-  ast->Dump();
-  cout << endl;
+  std::ostringstream oss;
+  ast->Dump(oss);
+
+
+  std::ofstream file(output);
+  if (file.is_open()) {
+    file << oss.str();  // 获取字符串并写入文件
+    file.close();
+    std::cout << "文件写入成功" << std::endl;
+  }
+
+
   return 0;
 }
+
+/*
+fun @main(): i32 {  // main 函数的定义
+%entry:             // 入口基本块
+  ret 0             // return 0
+}
+*/
